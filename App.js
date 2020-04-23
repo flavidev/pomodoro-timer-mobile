@@ -74,7 +74,7 @@ export default class App extends Component {
       ? (this.setState({ play: true }),
         (this.interval = setInterval(
           () => this.setState({ clockSeconds: this.state.clockSeconds - 1 }),
-          100
+          1000
         )))
       : vibrate();
   }
