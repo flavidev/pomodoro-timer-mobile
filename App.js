@@ -14,32 +14,48 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      workMinutes: 0,
-      workSeconds: 5,
+      workMinutes: 25,
+      workSeconds: 0,
       breakMinutes: 5,
       breakSeconds: 0,
-      clockMinutes: 25,
-      clockSeconds: 10,
+      clockMinutes: null,
+      clockSeconds: null,
       breakTime: false,
       play: false,
     };
   }
 
-  _bufferTime = null;
+  newText = null;
   interval = null;
+
+  componentDidMount() {
+    this.setState({
+      clockMinutes: this.state.workMinutes,
+      clockSeconds: this.state.workSeconds,
+    });
+  }
 
   componentDidUpdate() {
     if (!this.state.play) clearInterval(this.interval);
     else if (this.state.clockSeconds < 0) {
-      this.state.clockMinutes
+      this.state.clockMinutes > 0
         ? this.setState({
-            clockSeconds: 59,
             clockMinutes: this.state.clockMinutes - 1,
+            clockSeconds: 59,
           })
-        : (clearInterval(this.interval),
-          vibrate(),
-          this.setState({ clockSeconds: 0 }));
+        : this.state.breakTime
+        ? (vibrate(), this.reset())
+        : this.setState({
+            clockMinutes: this.state.breakMinutes,
+            clockSeconds: this.state.breakSeconds,
+            breakTime: true,
+          }),
+        !this.state.clockMinutes ? vibrate() : null;
     }
+  }
+
+  changeTime(text) {
+    this.newText = text;
   }
 
   // Reset function
@@ -58,7 +74,7 @@ export default class App extends Component {
       ? (this.setState({ play: true }),
         (this.interval = setInterval(
           () => this.setState({ clockSeconds: this.state.clockSeconds - 1 }),
-          1000
+          100
         )))
       : vibrate();
   }
@@ -70,12 +86,9 @@ export default class App extends Component {
 
   // Display "0" before numbers between 0 and 9.
   displayZero(num) {
-    return num >= 0 && num < 10 ? "0" + num : String(num);
-  }
-
-  // Normalize clock
-  normalize(minutes, seconds) {
-    // adjust seconds and minutes
+    return num >= 0 && num < 10
+      ? ((num = "0" + num), (num = num[num.length - 2] + num[num.length - 1]))
+      : String(num);
   }
 
   render() {
@@ -144,11 +157,19 @@ export default class App extends Component {
                   style={styles.adjustTimeInput}
                   keyboardType={"numeric"}
                   placeholder={this.displayZero(this.state.workMinutes)}
+                  onChangeText={(text) => this.changeTime(text)}
+                  onEndEditing={() =>
+                    this.setState({ workMinutes: this.newText })
+                  }
                 />
                 <TextInput
                   style={styles.adjustTimeInput}
                   keyboardType={"numeric"}
                   placeholder={this.displayZero(this.state.workSeconds)}
+                  onChangeText={(text) => this.changeTime(text)}
+                  onEndEditing={() =>
+                    this.setState({ workSeconds: this.newText })
+                  }
                 />
               </View>
               <View style={{ flexDirection: "row", flex: 1 }}>
@@ -157,11 +178,19 @@ export default class App extends Component {
                   style={styles.adjustTimeInput}
                   keyboardType={"numeric"}
                   placeholder={this.displayZero(this.state.breakMinutes)}
+                  onChangeText={(text) => this.changeTime(text)}
+                  onEndEditing={() =>
+                    this.setState({ breakMinutes: this.newText })
+                  }
                 />
                 <TextInput
                   style={styles.adjustTimeInput}
                   keyboardType={"numeric"}
                   placeholder={this.displayZero(this.state.breakSeconds)}
+                  onChangeText={(text) => this.changeTime(text)}
+                  onEndEditing={() =>
+                    this.setState({ breakSeconds: this.newText })
+                  }
                 />
               </View>
             </View>
