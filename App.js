@@ -54,10 +54,6 @@ export default class App extends Component {
     }
   }
 
-  changeTime(text) {
-    this.newText = text;
-  }
-
   // Reset function
   reset() {
     this.setState({
@@ -82,6 +78,11 @@ export default class App extends Component {
   // Pause timer
   pause() {
     clearInterval(this.interval);
+  }
+
+  // receives user input and updates global variable
+  changeTime(text) {
+    this.newText = text;
   }
 
   // Display "0" before numbers between 0 and 9.
