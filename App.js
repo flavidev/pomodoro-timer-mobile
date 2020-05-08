@@ -63,7 +63,9 @@ export default class App extends Component {
         (this.reset(),
         setTimeout(() => {
           this.play();
-        }, 200))),console.log("vibrate!!!")
+        }, 200))),
+        vibrate()
+        console.log("vibrate!!!")
   };
 
   render() {
