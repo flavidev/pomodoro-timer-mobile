@@ -19,12 +19,12 @@ export default class App extends Component {
 
     this.state = {
       title: "Pomodoro",
-      clockMinutes: "15",
+      clockMinutes: "25",
       clockSeconds: "00",
-      workMinutes: "1",
-      workSeconds: "15",
-      breakMinutes: "0",
-      breakSeconds: "48",
+      workMinutes: "25",
+      workSeconds: "00",
+      breakMinutes: "05",
+      breakSeconds: "00",
       runningClock: true,
       breakTime: false,
       reset: false,
