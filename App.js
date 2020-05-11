@@ -65,7 +65,6 @@ export default class App extends Component {
           this.play();
         }, 200))),
         vibrate()
-        console.log("vibrate!!!")
   };
 
   render() {
